@@ -26,11 +26,6 @@ class MeuAppMusica extends StatelessWidget {
   }
 }
 
-// ============================================================================
-// PARTE 1: Fica com você (Modelo, Dados e Tela Inicial)
-// ============================================================================
-
-/// Modelo para armazenar os dados e preferências de cada Gênero Musical
 class GeneroMusical {
   final String id;
   final String nome;
@@ -51,7 +46,6 @@ class GeneroMusical {
   });
 }
 
-/// Tela Inicial que exibe a ListView com os 6 gêneros musicais
 class TelaInicial extends StatefulWidget {
   const TelaInicial({super.key});
 
@@ -60,7 +54,6 @@ class TelaInicial extends StatefulWidget {
 }
 
 class _TelaInicialState extends State<TelaInicial> {
-  // Lista em memória contendo pelo menos 6 gêneros musicais
   final List<GeneroMusical> _listaGeneros = [
     GeneroMusical(
       id: '1',
@@ -157,14 +150,12 @@ class _TelaInicialState extends State<TelaInicial> {
                 ],
               ),
               onTap: () async {
-                // Abre a tela de detalhes e aguarda o retorno atualizado
                 await Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => TelaConfiguracoesGenero(genero: genero),
                   ),
                 );
-                // Atualiza a lista inicial caso o estado interno tenha mudado
                 setState(() {});
               },
             ),
