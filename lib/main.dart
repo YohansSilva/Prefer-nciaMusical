@@ -1,6 +1,6 @@
 // ============================================================================
 // TP2 - Aplicativo de Preferências Musicais
-// Autores: Yohans Silva Bezerra & Luiz Henrique
+// Autores: Yohans Silva Bezerra & Luiz Henrique dos Passos Silva
 // ============================================================================
 
 import 'package:flutter/material.dart';
@@ -161,6 +161,124 @@ class _TelaInicialState extends State<TelaInicial> {
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+class TelaConfiguracoesGenero extends StatefulWidget {
+  final GeneroMusical genero;
+
+  const TelaConfiguracoesGenero({super.key, required this.genero});
+
+  @override
+  State<TelaConfiguracoesGenero> createState() => _TelaConfiguracoesGeneroState();
+}
+
+class _TelaConfiguracoesGeneroState extends State<TelaConfiguracoesGenero> {
+  late double _volumeTemporario;
+  late bool _receberRecomendacoesTemporario;
+
+  @override
+  void initState() {
+    super.initState();
+    _volumeTemporario = widget.genero.volumePreferido;
+    _receberRecomendacoesTemporario = widget.genero.receberRecomendacoes;
+  }
+
+  void _salvarPreferencias() {
+    setState(() {
+      widget.genero.volumePreferido = _volumeTemporario;
+      widget.genero.receberRecomendacoes = _receberRecomendacoesTemporario;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Preferências salvas para ${widget.genero.nome}!'),
+        duration: const Duration(seconds: 2),
+        backgroundColor: Colors.deepPurple,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('${widget.genero.nome} - Yohans Silva Bezerra & Luiz Henrique'),
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12.0),
+                child: Image.network(
+                  widget.genero.imagemUrl,
+                  height: 180,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) =>
+                      const Icon(Icons.music_note, size: 80),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'Descrição',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              widget.genero.descricao,
+              style: const TextStyle(fontSize: 16, height: 1.4),
+            ),
+            const Divider(height: 32),
+            Text(
+              'Volume preferido: ${_volumeTemporario.round()}%',
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            ),
+            Slider(
+              value: _volumeTemporario,
+              min: 0,
+              max: 100,
+              divisions: 100,
+              label: '${_volumeTemporario.round()}%',
+              onChanged: (double valor) {
+                setState(() {
+                  _volumeTemporario = valor;
+                });
+              },
+            ),
+            const SizedBox(height: 10),
+            CheckboxListTile(
+              title: const Text('Desejo receber recomendações deste gênero'),
+              value: _receberRecomendacoesTemporario,
+              contentPadding: EdgeInsets.zero,
+              controlAffinity: ListTileControlAffinity.leading,
+              onChanged: (bool? valor) {
+                setState(() {
+                  _receberRecomendacoesTemporario = valor ?? false;
+                });
+              },
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              height: 48,
+              child: ElevatedButton(
+                onPressed: _salvarPreferencias,
+                child: const Text(
+                  'Salvar Preferências',
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
